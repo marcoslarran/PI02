@@ -22,4 +22,4 @@ El contenido va a ser listado en el orden dicatado por las consignas del proyect
 
 - **pi02_st_env:** Entorno virtual creado para el desarrollo de la aplicación en streamlit.
 
-- **requirements.txt:** Archivo enviado a streamlit con las librerías requeridas para el deploy de la aplicación.
+- **requirements.txt:** Archivo enviado a streamlit con las librerías requeridas para el deploy de la aplicación. El link a la aplicación es el siguiente: https://pi02-eda.streamlit.app/
