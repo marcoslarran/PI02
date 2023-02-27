@@ -1,4 +1,5 @@
 #Importamos las librerías
+import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,9 +14,9 @@ def leerCSVdeIndices (simbolo:str):
         df = pd.read_csv(simbolo+'.csv',index_col=0)
     except:
         try:
-            df = pd.read_csv('C:/Users/larra/Documents/PI02/Sectores/'+simbolo+'.csv',index_col=0)
+            df = pd.read_csv('Sectores/'+simbolo+'.csv',index_col=0)
         except:
-            df = pd.read_csv('C:/Users/larra/Documents/PI02/Empresas/'+simbolo+'.csv',index_col=0)
+            df = pd.read_csv('Empresas/'+simbolo+'.csv',index_col=0)
     df.index = pd.to_datetime(df.index)
     return df
 
