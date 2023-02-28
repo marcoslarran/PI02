@@ -20,6 +20,8 @@ def leerCSVdeIndices (simbolo:str):
     df.index = pd.to_datetime(df.index)
     return df
 
+st.set_page_config(layout='wide')
+
 #Ponemos la fuente
 st.markdown('###### Fuente: Yahoo Finance')
 ultima_actualizacion = '2023-02-23'
@@ -130,37 +132,51 @@ empresas_seleccionadas = st.multiselect('Seleccione empresas a analizar',options
 if len(empresas_seleccionadas) == 1:
     fig6 = plt.figure(figsize=(8,6))
     simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[0]]['Symbol'].values[0]     #Buscamos el código
-    empresa = leerCSVdeIndices(simbolo)  
-    sns.lineplot(data=empresa,x=empresa.index,y='Close')
+    empresa = leerCSVdeIndices(simbolo)                                                                     #Importamos la data
+    empresa_tendencia = empresa['Close'].rolling(window=(100),center=True).mean()                           #Obtenemos la media móvil
+    empresa_tendencia.dropna(inplace=True)                                                                  #Descartamos los nulos
+    sns.lineplot(data=empresa,x=empresa.index,y='Close')                                                    #Gráficamos la evolución de los precios de la empresa
+    sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)               #Graficamos la media móvil
     plt.title(empresas_seleccionadas[0])
 elif len(empresas_seleccionadas)<4:
-    fig6, ax3 = plt.subplots(1,len(empresas_seleccionadas),figsize=(6+(2*len(empresas_seleccionadas)),6),sharey=True)   #Armamos la figura adaptada a la cantidad de selecciones
-    for i in range(len(empresas_seleccionadas)):
-        simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0] #Buscamos el código
-        empresa = leerCSVdeIndices(simbolo)                                                                 #Importamos la data
+    fig6, ax3 = plt.subplots(1,len(empresas_seleccionadas),figsize=(6+(2*len(empresas_seleccionadas)),6),sharey=True)   #Armamos la figura adaptada a la
+    for i in range(len(empresas_seleccionadas)):                                                                        #cantidad de selecciones
+        simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0]
+        empresa = leerCSVdeIndices(simbolo)
+        empresa_tendencia = empresa['Close'].rolling(window=(100),center=True).mean()
+        empresa_tendencia.dropna(inplace=True)
         sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[i])
+        sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
         ax3[i].set_title(empresas_seleccionadas[i])
 elif len(empresas_seleccionadas) == 4:
-     fig6, ax3 = plt.subplots(2,2,figsize=(10,10),sharex=True,sharey=True)                                                          #Armamos la figura adaptada a la cantidad de selecciones
+     fig6, ax3 = plt.subplots(2,2,figsize=(10,10),sharex=True,sharey=True)
      for i in range(len(empresas_seleccionadas)):
-         simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0] #Buscamos el código
-         empresa = leerCSVdeIndices(simbolo)                                                                 #Importamos la data
-         if i<2:
-             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[0,i])
-             ax3[0,i].set_title(empresas_seleccionadas[i])
-         else:
-             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-2])
-             ax3[1,i-2].set_title(empresas_seleccionadas[i])
+        simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0]
+        empresa = leerCSVdeIndices(simbolo)
+        empresa_tendencia = empresa['Close'].rolling(window=(100),center=True).mean()
+        empresa_tendencia.dropna(inplace=True)                                                 
+        if i<2:
+            sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[0,i])
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+            ax3[0,i].set_title(empresas_seleccionadas[i])
+        else:
+            sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-2])
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+            ax3[1,i-2].set_title(empresas_seleccionadas[i])
 else:
     fig6, ax3 = plt.subplots(2,1+round(len(empresas_seleccionadas)/3),sharex=True,sharey=True,
-                             figsize=(8+2*round(len(empresas_seleccionadas)/3),10))                         #Armamos la figura adaptada a la cantidad de selecciones
+                             figsize=(8+2*round(len(empresas_seleccionadas)/3),10))
     for i in range(len(empresas_seleccionadas)):
-        simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0] #Buscamos el código
-        empresa = leerCSVdeIndices(simbolo)                                                                 #Importamos la data
+        simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0]
+        empresa = leerCSVdeIndices(simbolo)
+        empresa_tendencia = empresa['Close'].rolling(window=(100),center=True).mean()
+        empresa_tendencia.dropna(inplace=True)
         if i<3:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[0,i])
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
             ax3[0,i].set_title(empresas_seleccionadas[i])
         else:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-3])
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
             ax3[1,i-3].set_title(empresas_seleccionadas[i])
 st.pyplot(fig6)

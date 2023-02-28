@@ -23,3 +23,9 @@ El contenido va a ser listado en el orden dicatado por las consignas del proyect
 - **pi02_st_env:** Entorno virtual creado para el desarrollo de la aplicación en streamlit.
 
 - **requirements.txt:** Archivo enviado a streamlit con las librerías requeridas para el deploy de la aplicación. El link a la aplicación es el siguiente: https://pi02-eda.streamlit.app/
+
+- **Analisis empresas.ipynb**: Se realizan nuevos gráficos en las empresas seleccionadas a través del análisis de la API que luego se cargarán también a la API para poder verlos ahi. 
+
+- **Datos_empresas.csv:** Archivo obtenido en Análisis empresas.ipynb con los datos de las empresas seleccionadas.
+
+- **PI02_Analisis empresas.pbix:** Dashboard donde se analizan las 3 empresas seleccionadas del sector seleccionado. En este se encuentran indicadores más precisos que para decidir en que empresa invertir.
