@@ -20,7 +20,7 @@ def leerCSVdeIndices (simbolo:str):
     df.index = pd.to_datetime(df.index)
     return df
 
-st.set_page_config(layout='wide')
+#st.set_page_config(layout='wide')
 
 #Ponemos la fuente
 st.markdown('###### Fuente: Yahoo Finance')
@@ -146,7 +146,7 @@ elif len(empresas_seleccionadas)<4:
         empresa_tendencia = empresa['Close'].rolling(window=(100),center=True).mean()
         empresa_tendencia.dropna(inplace=True)
         sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[i])
-        sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+        sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[i])
         ax3[i].set_title(empresas_seleccionadas[i])
 elif len(empresas_seleccionadas) == 4:
      fig6, ax3 = plt.subplots(2,2,figsize=(10,10),sharex=True,sharey=True)
@@ -157,11 +157,11 @@ elif len(empresas_seleccionadas) == 4:
         empresa_tendencia.dropna(inplace=True)                                                 
         if i<2:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[0,i])
-            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[0,i])
             ax3[0,i].set_title(empresas_seleccionadas[i])
         else:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-2])
-            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[1,i-2])
             ax3[1,i-2].set_title(empresas_seleccionadas[i])
 else:
     fig6, ax3 = plt.subplots(2,1+round(len(empresas_seleccionadas)/3),sharex=True,sharey=True,
@@ -173,10 +173,10 @@ else:
         empresa_tendencia.dropna(inplace=True)
         if i<3:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[0,i])
-            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[0,i])
             ax3[0,i].set_title(empresas_seleccionadas[i])
         else:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-3])
-            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)
+            sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[1,i-3])
             ax3[1,i-3].set_title(empresas_seleccionadas[i])
 st.pyplot(fig6)
