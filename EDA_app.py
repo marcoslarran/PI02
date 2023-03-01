@@ -46,7 +46,7 @@ fecha_inicio,fecha_fin = st.slider('Definir fechas de gráfico',value=(datetime.
 sns.lineplot(data=sp500[(sp500.index>fecha_inicio)&(sp500.index<fecha_fin)],y='Close',
              x=sp500[(sp500.index>fecha_inicio)&(sp500.index<fecha_fin)].index)
 plt.title('SP500',fontdict={'fontsize':20})
-plt.ylabel('Valor de mercado (US$)')
+plt.ylabel('Precio del activo (US$)')
 plt.xlabel('Fecha')
 st.pyplot(fig1)
 
@@ -71,7 +71,7 @@ fecha_inicio_sec,fecha_fin_sec = st.slider('Definir fechas de gráfico',value=(d
 sns.lineplot(data=sp_sector[(sp_sector.index>fecha_inicio_sec)&(sp_sector.index<fecha_fin_sec)],y='Close',
              x=sp_sector[(sp_sector.index>fecha_inicio_sec)&(sp_sector.index<fecha_fin_sec)].index)
 plt.title('SP500 '+str(sector),fontdict={'fontsize':20})
-plt.ylabel('Valor de mercado (US$)')
+plt.ylabel('Precio del activo (US$)')
 plt.xlabel('Fecha')
 st.pyplot(fig2)
 
@@ -99,9 +99,12 @@ fecha_inicio_comp_sec,fecha_fin_comp_sec = st.slider('Definir fechas de gráfico
 sns.lineplot(data=sp_sector1[(sp_sector1.index>fecha_inicio_comp_sec)&(sp_sector1.index<fecha_fin_comp_sec)],
              y='Close',x=sp_sector1[(sp_sector1.index>fecha_inicio_comp_sec)&(sp_sector1.index<fecha_fin_comp_sec)].index,ax=ax[0])
 ax[0].set_title('Indice del sector '+sector1)
+ax[0].set_ylabel('Precio del activo (US$)')
+ax[0].set_xlabel('')
 sns.lineplot(data=sp_sector2[(sp_sector2.index>fecha_inicio_comp_sec)&(sp_sector2.index<fecha_fin_comp_sec)],
              y='Close',x=sp_sector2[(sp_sector2.index>fecha_inicio_comp_sec)&(sp_sector2.index<fecha_fin_comp_sec)].index,ax=ax[1])
 ax[1].set_title('Indice del sector '+sector2)
+ax[1].set_xlabel('')
 st.pyplot(fig3)
 
 #Vamos a analizar las empresas individualmente para quedarnos con unas pocas. Para ello, definimos un sector y habilitamos la elección entre las empresas de este sector.
@@ -112,7 +115,8 @@ lista_empresas = list(sp500_empresas[sp500_empresas['GICS Sector']==sector_selec
 fig5 = plt.figure()
 sns.scatterplot(data=sp500_empresas[sp500_empresas['GICS Sector']==sector_seleccionado],
                 x='Market Capitalization',y='Current stock value')
-plt.ylabel('Precio de la acción')
+plt.ylabel('Precio del activo (US$)')
+plt.xlabel('Capitalización de mercado (US$)')
 st.pyplot(fig5)
 
 #Ploteamos el market cap y valor actual de la acción de la mitad con mayores valores.
@@ -120,9 +124,13 @@ fig4,ax2 = plt.subplots(1,2,figsize=(8,10))
 sns.barplot(data=sp500_empresas[sp500_empresas['GICS Sector']==sector_seleccionado].sort_values(by='Market Capitalization',
             ascending=False).head(int(sp500_empresas[sp500_empresas['GICS Sector']==sector_seleccionado].shape[0]/2)),
             x='Market Capitalization',y='Symbol',orient='h',ax=ax2[0])
+ax2[0].set_ylabel('Simbolo')
+ax2[0].set_xlabel('Capitalización de mercado (US$)',loc='left')
 sns.barplot(data=sp500_empresas[sp500_empresas['GICS Sector']==sector_seleccionado].sort_values(by='Current stock value',
             ascending=False).head(int(sp500_empresas[sp500_empresas['GICS Sector']==sector_seleccionado].shape[0]/2)),
             x='Current stock value',y='Symbol',orient='h',ax=ax2[1])
+ax2[1].set_ylabel('Simbolo')
+ax2[1].set_xlabel('Precio del activo (US$)')
 st.pyplot(fig4)
 
 #Seleccionamos las empresas dentro del sector seleccionado
@@ -138,9 +146,12 @@ if len(empresas_seleccionadas) == 1:
     sns.lineplot(data=empresa,x=empresa.index,y='Close')                                                    #Gráficamos la evolución de los precios de la empresa
     sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values)               #Graficamos la media móvil
     plt.title(empresas_seleccionadas[0])
+    plt.xlabel('')
+    plt.ylabel('Precio del activo (US$)')
 elif len(empresas_seleccionadas)<4:
     fig6, ax3 = plt.subplots(1,len(empresas_seleccionadas),figsize=(6+(2*len(empresas_seleccionadas)),6),sharey=True)   #Armamos la figura adaptada a la
-    for i in range(len(empresas_seleccionadas)):                                                                        #cantidad de selecciones
+    ax3[0].set_ylabel('Precio del activo (US$)')                                                                        #cantidad de selecciones
+    for i in range(len(empresas_seleccionadas)):
         simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0]
         empresa = leerCSVdeIndices(simbolo)
         empresa_tendencia = empresa['Close'].rolling(window=(100),center=True).mean()
@@ -148,8 +159,12 @@ elif len(empresas_seleccionadas)<4:
         sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[i])
         sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[i])
         ax3[i].set_title(empresas_seleccionadas[i])
+        ax3[i].set_xlabel('')
 elif len(empresas_seleccionadas) == 4:
      fig6, ax3 = plt.subplots(2,2,figsize=(10,10),sharex=True,sharey=True)
+     plt.xlabel('')
+     ax3[0,0].set_ylabel('Precio del activo (US$)')
+     ax3[1,0].set_ylabel('Precio del activo (US$)')
      for i in range(len(empresas_seleccionadas)):
         simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0]
         empresa = leerCSVdeIndices(simbolo)
@@ -163,9 +178,12 @@ elif len(empresas_seleccionadas) == 4:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-2])
             sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[1,i-2])
             ax3[1,i-2].set_title(empresas_seleccionadas[i])
+            ax3[1,i-2].set_xlabel('')
 else:
     fig6, ax3 = plt.subplots(2,1+round(len(empresas_seleccionadas)/3),sharex=True,sharey=True,
                              figsize=(8+2*round(len(empresas_seleccionadas)/3),10))
+    ax3[0,0].set_ylabel('Precio del activo (US$)')
+    ax3[1,0].set_ylabel('Precio del activo (US$)')
     for i in range(len(empresas_seleccionadas)):
         simbolo = sp500_empresas[sp500_empresas['Security']==empresas_seleccionadas[i]]['Symbol'].values[0]
         empresa = leerCSVdeIndices(simbolo)
@@ -179,4 +197,5 @@ else:
             sns.lineplot(data=empresa,x=empresa.index,y='Close',ax=ax3[1,i-3])
             sns.lineplot(data=empresa_tendencia,x=empresa_tendencia.index,y=empresa_tendencia.values,ax=ax3[1,i-3])
             ax3[1,i-3].set_title(empresas_seleccionadas[i])
+            ax3[1,i-3].set_xlabel('')
 st.pyplot(fig6)
